@@ -34,6 +34,7 @@ import axios from 'axios';
 
 export default {
   name: 'SearchView',
+  props:["isNav"],
   data() {
     return {
       articles: [],
@@ -59,6 +60,7 @@ export default {
     const urlParams = new URLSearchParams(window.location.search);
     this.keyword = urlParams.get('keyword'); // 검색어를 URL에서 가져옴
     this.fetchArticles(); // 검색 결과 가져오기
+    this.$emit('isNavChange',false)
   }
 }
 </script>

@@ -1,10 +1,10 @@
 <template>
   <HeaderMenu/>
-  <nav>
+  <nav v-if="isNav">
     <router-link to="/">국내</router-link> |
     <router-link to="/about">해외</router-link>
   </nav>
-  <router-view  aaa="hello"/>
+  <router-view  @isNav="isNavChange"/>
   <FooterSection/>
 </template>
 
@@ -18,6 +18,14 @@ export default {
   name: 'App',
   components: {
     HeaderMenu, FooterSection
+  },
+  data(){
+    return{ isNav:true }
+  },
+  methods:{
+    isNavChange(n){
+      this.isNav = n;
+    }
   }
 }
 

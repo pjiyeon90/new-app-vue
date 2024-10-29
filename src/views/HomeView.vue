@@ -133,6 +133,7 @@ export default {
       this.apiRequest(this.mapCategoryToApi(this.activeCategory)); // 초기 카테고리로 API 요청
       this.apiRequest2('politics'); // 초기 카테고리로 API 요청
       // this.fetchArticles();
+      this.$emit('isNavChange',true)
     },
     components: {
         Swiper,

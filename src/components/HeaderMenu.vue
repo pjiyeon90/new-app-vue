@@ -27,7 +27,7 @@ export default {
             
             // API 요청 
             try {
-                const response = await axios.get(`http://localhost:4000/news?keyword=${this.keyword}`);
+                const response = await axios.get(`https://express-server-mocha-beta.vercel.app/news?keyword=${this.keyword}`);
                 const filteredArticles = response.data.data.filter(article => article.image_url); // 이미지가 있는 데이터만 필터링
                 
                 this.$router.push({ path: '/search', query: { keyword: this.keyword } });

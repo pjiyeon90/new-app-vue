@@ -5,10 +5,21 @@
         <!-- 컴포넌트 출력 -->
         <!-- 상단 큰 이미지 -->
         <div class="mainimg" v-if="randomArticle">
-          <figure><img :src="randomArticle.image_url" alt="기사 이미지"></figure>
+          <figure>
+            <a :href="randomArticle.content_url" target="_blank" rel="noopener noreferrer">
+              <img :src="randomArticle.image_url" alt="기사 이미지">
+            </a>
+        </figure>
           <div class="img-summary">
-          <h3>{{  randomArticle.title }}</h3> 
-          <p class="summary">{{  randomArticle.summary }}</p>
+          <h3>
+            <a :href="randomArticle.content_url" target="_blank" rel="noopener noreferrer">
+            {{  randomArticle.title }}
+            </a></h3> 
+          <p class="summary">
+            <a :href="randomArticle.content_url" target="_blank" rel="noopener noreferrer">
+              {{  randomArticle.summary }}
+            </a>
+          </p>
           </div>
         </div>
        
@@ -16,7 +27,11 @@
         <swiper :slides-per-view="1" :navigation="true" :modules="modules" :pagination="{ clickable: true }" @slideChange="onSlideChange">
         <swiper-slide v-for="(article, index) in articles" :key="index">
           <div class="textlist-wrap">
-              <h3>{{ article.title }}</h3>
+              <h3>
+                <a :href="article.content_url" target="_blank" rel="noopener noreferrer">
+                {{ article.title }}
+                </a>
+            </h3>
           </div>
         </swiper-slide>
        </swiper>
@@ -31,8 +46,12 @@
               </ul>
           </div>
           <div class="text-row" v-for="(article, index) in visibleSection" :key="index" :class="{ 'last-row': index === visibleSection.length - 1 }">
-            <h3>{{ article.title }}</h3>
-            <p>{{ article.summary }}</p>
+            <h3>
+              <a :href="article.content_url" target="_blank" rel="noopener noreferrer">
+              {{ article.title }}
+              </a>
+            </h3>
+            <p><a :href="article.content_url" target="_blank" rel="noopener noreferrer">{{ article.summary }}</a></p>
           </div>
           
           <!-- 더보기 버튼 -->
@@ -43,8 +62,8 @@
            <div v-for="(article, index) in visibleArticles" :key="index" class="list-wrap">
                 <figure><img :src='article.image_url' alt="기사 이미지"></figure>
                 <div class="img-explain">
-                <h3>{{ article.title }}</h3> 
-                <p class="editrow">{{ article.summary }}</p>
+                <h3><a :href="article.content_url" target="_blank" rel="noopener noreferrer">{{ article.title }}</a></h3> 
+                <p class="editrow"><a :href="article.content_url" target="_blank" rel="noopener noreferrer">{{ article.summary }}</a></p>
                 </div>
            </div>
         <!-- 더보기 버튼 -->
@@ -124,9 +143,9 @@ export default {
       console.log(category);
       try {
         const res = await axios.get(`https://express-server-mocha-beta.vercel.app/news?keyword=${category}`);
-        // console.log(res.data); 응답 데이터 확인
+        console.log(res.data); 
         if (res.data && res.data.data) {
-            this.articles = res.data.data.filter(article => article.image_url);
+            this.articles = res.data.data.filter(article => article.image_url );
             this.selectRandomArticle();
         } else {
             console.error("응답 데이터 구조가 예상과 다릅니다:", res.data);
@@ -144,21 +163,6 @@ export default {
         console.error("API 요청 오류:", error);
       }
     },
-  //   async fetchArticles(category) {
-  //   console.log(category)
-  //   try {
-  //       const res = await axios.get(`http://localhost:4000/news?keyword=${category}`);
-  //       // console.log(res.data); 응답 데이터 확인
-  //       if (res.data && res.data.data) {
-  //           this.articles = res.data.data.filter(article => article.image_url);
-  //           this.selectRandomArticle();
-  //       } else {
-  //           console.error("응답 데이터 구조가 예상과 다릅니다:", res.data);
-  //       }
-  //      } catch (error) {
-  //       console.error("API 요청 오류:", error);
-  //     }
-  // },
    selectRandomArticle() {
     if (this.articles.length > 0) {
       const randomIndex = Math.floor(Math.random() * this.articles.length);
@@ -198,6 +202,7 @@ export default {
 
 <style lang="scss">
 .contentswrap{
+  a{text-decoration: none; color: #252525; }
   margin: 0 auto;
   width: calc(100% - 40px);
   padding-bottom: 50px;
@@ -219,10 +224,20 @@ export default {
     }
   }
   .img-summary{
-    h3{text-align: left;}
+    h3{
+      a{ color: #252525;
+        font-size: 1.8rem;
+        text-decoration: none;
+        text-align: left;
+      }
+      }
     p{
-      font-size: 15px;
-      text-align: left;}
+      a{  color: #252525;
+          text-decoration: none;
+          font-size: 15px;
+          text-align: left;
+      }
+      }
     .summary {
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -249,11 +264,16 @@ export default {
   .textlist-wrap{
       width: 100%;
       h3{
+        a{
+          display: inline-block;
+        color: white;
         margin: 0 auto;
         text-align: center;
         width: 75%;
         font-size: 16px;
         font-weight: 300;
+        }
+        
       }
      }
     }

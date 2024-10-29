@@ -6,10 +6,17 @@
         <!-- 상단 큰 이미지 -->
         <div class="mainimg-global" v-if="randomArticle">
           <div class="img-summary-global">
-          <h3>{{  randomArticle.title }}</h3> 
-          <p class="summary">{{  randomArticle.summary }}</p>
+          <h3>
+            <a :href="randomArticle.content_url" target="_blank" rel="noopener noreferrer">
+              {{  randomArticle.title }}
+            </a>
+            </h3> 
+          <p class="summary"><a :href="randomArticle.content_url" target="_blank" rel="noopener noreferrer">{{  randomArticle.summary }}</a></p>
           </div>
-          <figure><img :src="randomArticle.image_url" alt="기사 이미지"></figure>
+          <figure>
+            <a :href="randomArticle.content_url" target="_blank" rel="noopener noreferrer">
+            <img :src="randomArticle.image_url" alt="기사 이미지"></a>
+          </figure>
         </div>
        
        
@@ -24,8 +31,8 @@
               </ul>
           </div>
           <div class="text-row" v-for="(article, index) in visibleSection" :key="index" :class="{ 'last-row': index === visibleSection.length - 1 }">
-            <h3>{{ article.title }}</h3>
-            <p>{{ article.summary }}</p>
+            <h3><a :href="article.content_url" target="_blank" rel="noopener noreferrer">{{ article.title }}</a></h3>
+            <p><a :href="article.content_url" target="_blank" rel="noopener noreferrer">{{ article.summary }}</a></p>
           </div>
           
           <!-- 더보기 버튼 -->
@@ -36,7 +43,7 @@
       <swiper :slides-per-view="1" :navigation="true" :modules="modules" :pagination="{ clickable: true }" @slideChange="onSlideChange">
         <swiper-slide v-for="(article, index) in articles" :key="index">
           <div class="textlist-wrap">
-              <h3>{{ article.title }}</h3>
+              <h3><a :href="article.content_url" target="_blank" rel="noopener noreferrer">{{ article.title }}</a></h3>
           </div>
         </swiper-slide>
        </swiper>
@@ -47,8 +54,8 @@
            <div v-for="(article, index) in visibleArticles" :key="index" class="list-wrap">
                 <figure><img :src='article.image_url' alt="기사 이미지"></figure>
                 <div class="img-explain">
-                <h3>{{ article.title }}</h3> 
-                <p class="editrow">{{ article.summary }}</p>
+                <h3><a :href="article.content_url" target="_blank" rel="noopener noreferrer">{{ article.title }}</a></h3> 
+                <p class="editrow"><a :href="article.content_url" target="_blank" rel="noopener noreferrer">{{ article.summary }}</a></p>
                 </div>
            </div>
         <!-- 더보기 버튼 -->
@@ -115,8 +122,8 @@ export default {
       },
     },
     created(){
-      this.apiRequest(this.mapCategoryToApi(this.activeCategory)); // 초기 카테고리로 API 요청
-      this.apiRequest2('politics'); // 초기 카테고리로 API 요청
+      this.apiRequest3(this.mapCategoryToApi(this.activeCategory)); // 초기 카테고리로 API 요청
+      this.apiRequest4('politics'); // 초기 카테고리로 API 요청
       // this.fetchArticles();
     },
     components: {
@@ -124,7 +131,7 @@ export default {
         SwiperSlide,
       },
     methods: {
-    async apiRequest(category) {
+    async apiRequest3(category) {
       console.log(category);
       try {
         const res = await axios.get(`https://express-server-mocha-beta.vercel.app/news/global?keyword=${category}`);
@@ -139,7 +146,7 @@ export default {
         console.error("API 요청 오류:", error);
       }
     },
-    async apiRequest2(category) {
+    async apiRequest4(category) {
       console.log(category)
       try {
         const res = await axios.get(`https://express-server-mocha-beta.vercel.app/news/section?m=global-articles&s=${category}`);

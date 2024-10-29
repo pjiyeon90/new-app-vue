@@ -31,7 +31,7 @@ export default {
   methods: {
     async fetchArticles() {
       try {
-        const res = await axios.get(`http://localhost:4000/news/search?keyword=${this.keyword}&date_from=2024-10-23&date_to=2024-10-24`);
+        const res = await axios.get(`https://express-server-mocha-beta.vercel.app/news/search?keyword=${this.keyword}&date_from=2024-10-23&date_to=2024-10-24`);
         console.log(res.data, '==========');
         this.articles = res.data.data; // API 응답 구조에 맞게 수정
         this.articles = res.data.data.filter(article => article.image_url);
@@ -74,6 +74,7 @@ export default {
           display: flex;
           flex-wrap: wrap;
           justify-content: space-between;
+          margin-bottom: 30px;
            .news-result-box{
             width: 49%; 
             height: 600px;
@@ -95,7 +96,13 @@ export default {
                     filter: drop-shadow(0 0 5px rgba(0,0,0,.2));
                    }
                 }
-            h2{ font-size: 1.4rem;}
+            h2{ font-size: 1.4rem;
+                display: -webkit-box;
+                overflow: hidden;
+                text-overflow: ellipsis; /* ...으로 표시 */
+                line-height: 1.5em; /* 줄 높이 설정 (필요에 따라 조정) */
+                max-height: 6em; /* 최대 높이 설정 */ 
+            }
             p{
                 margin: 0;
                 padding:0 10px;

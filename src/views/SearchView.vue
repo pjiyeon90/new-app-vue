@@ -6,10 +6,22 @@
         </div>
         <div class="news-result-wrap">
             <div v-for="article in articles" :key="article.id" class="news-result-box">
-            <figure><img :src="article.image_url" alt="기사 이미지"></figure>
+            <figure>
+              <a :href="article.content_url" target="_blank" rel="noopener noreferrer">
+              <img :src="article.image_url" alt="기사 이미지">
+              </a>
+            </figure>
             <div>
-            <h2>{{ article.title }}</h2>
-            <p>{{ article.summary }}</p>
+            <h2>
+              <a :href="article.content_url" target="_blank" rel="noopener noreferrer">
+              {{ article.title }}
+              </a>
+            </h2>
+            <p>
+              <a :href="article.content_url" target="_blank" rel="noopener noreferrer">
+              {{ article.summary }}
+              </a>
+            </p>
             </div>
             </div>
         </div>
@@ -55,6 +67,7 @@ export default {
         margin: 0 auto;
         width: calc(100% - 40px);
         margin-bottom: 50px;
+        a{text-decoration: none; color: #252525; }
         h1{
             font-size: 1.9rem;
             margin-bottom: 40px;

@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    
       <div class="contentswrap">
         <!-- 컴포넌트 출력 -->
         <!-- 상단 큰 이미지 -->
@@ -12,31 +13,30 @@
         </div>
        
         <!-- 뉴스 기사 텍스트 스와이퍼 -->
-        <swiper :direction="'vertical'" :slides-per-view="3" pagination navigation class="mySwiper">
+        <swiper :slides-per-view="1" :navigation="true" :modules="modules" :pagination="{ clickable: true }" @slideChange="onSlideChange">
         <swiper-slide v-for="(article, index) in articles" :key="index">
           <div class="textlist-wrap">
               <h3>{{ article.title }}</h3>
           </div>
         </swiper-slide>
        </swiper>
+
+       <!-- 장르별 탭 부분 -->
        <div class="genre-seciton">
           <div className='menuwrap' >
               <ul>
-                  <li><a href='/' className='actived'>#정치</a></li>
-                  <li><a href='/'>#경제</a></li>
-                  <li><a href='/'>#사회</a></li>
-                  <li><a href='/'>#문화</a></li>
-                  <li><a href='/'>#세계</a></li>
-                  <li><a href='/'>#기술</a></li>
-                  <li><a href='/'>#연예</a></li>
-                  <li><a href='/'>#여론</a></li>
+                  <li v-for="category in categories" :key="category">
+                    <a :class="{ actived: activeCategory === category }" @click="changeCategory(category)">#{{ category }}</a>
+                  </li>
               </ul>
           </div>
-          <div class="text-row" v-for="(article, index) in visibleArticles" :key="index">
+          <div class="text-row" v-for="(article, index) in visibleSection" :key="index" :class="{ 'last-row': index === visibleSection.length - 1 }">
             <h3>{{ article.title }}</h3>
-            <p>{{  article.summary }}</p>
+            <p>{{ article.summary }}</p>
           </div>
-
+          
+          <!-- 더보기 버튼 -->
+          <button v-if="hasMoreSectionArticles" @click="showMoreSection" class="more-button" style="margin-top: 30px;">더보기</button>
       </div>
         <!-- 하위 작은 이미지 -->
         <div class="listbox">
@@ -47,11 +47,9 @@
                 <p class="editrow">{{ article.summary }}</p>
                 </div>
            </div>
-        </div>
-
         <!-- 더보기 버튼 -->
         <button v-if="hasMoreArticles" @click="showMore" class="more-button">더보기</button>
-
+       </div>
       
       </div>
   </div>
@@ -60,65 +58,151 @@
 <script>
 import axios from 'axios';
 import { Swiper, SwiperSlide } from 'swiper/vue';
-import 'swiper/swiper-bundle.css';
+// import 'swiper/swiper-bundle.css';
+
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+
+// import SwiperCore, { Navigation, Pagination } from 'swiper';
+import { Navigation, Pagination } from 'swiper/modules';
+
+// Swiper 모듈 추가
+// SwiperCore.use([Navigation, Pagination]);
 
 
 export default {
   name: 'HomeView',
+  props:['aaa'],
+  setup() {
+      return {
+        modules: [Navigation, Pagination],
+      };
+    },
   data(){
         return { 
           randomArticle: null, // 랜덤으로 선택된 기사를 저장할 변수
-           articles: [], // API에서 받아온 데이터를 저장할 변수
-           visibleCount: 3, // 처음에 보여줄 기사 수
-
-          }
+          articles: [], // API에서 받아온 데이터를 저장할 변수
+          isibleCount: 4, // 기본 visibleCount
+          sectionVisibleCount: 4, // 섹션 탭에 대한 visibleCount
+          listVisibleCount: 4, // listbox에 대한 visibleCount
+          activeCategory: '정치', // 기본 선택된 카테고리
+          categories: ['정치', '경제', '사회', '문화', '세계', '기술', '연예', '견해'],
+          section:[]
+        };
     },
     computed: {
-    visibleArticles() {
-      return this.articles.slice(0, this.visibleCount);
-    },
-    hasMoreArticles() {
-      return this.articles.length > this.visibleCount;
-    },
+      visibleArticles() {
+        return this.articles.slice(0, this.listVisibleCount); // listbox에 대한 visibleCount
+       },
+       visibleSection() {
+        return this.section.slice(0, this.sectionVisibleCount); // 섹션에 대한 visibleCount
+      },
+      filteredArticles() {
+        const filtered = this.articles.filter(article => article.category === this.mapCategoryToApi(this.activeCategory));
+        console.log(filtered);
+        return filtered;
+      },
+      hasMoreArticles() {
+        return this.articles.length > this.listVisibleCount; // listbox의 더보기 버튼
+      },
+      hasMoreSectionArticles() {
+        return this.section.length > this.sectionVisibleCount; // 섹션의 더보기 버튼
+      },
     },
     created(){
-        this.apiRequest()
+      this.apiRequest(this.mapCategoryToApi(this.activeCategory)); // 초기 카테고리로 API 요청
+      this.apiRequest2('politics'); // 초기 카테고리로 API 요청
+      // this.fetchArticles();
     },
-    methods:{
-      async apiRequest(){
-        try {
-        const res = await axios.get('http://localhost:4000/news');
-        this.articles = res.data.data.filter(article => article.image_url); // 이미지가 있는 기사만 필터링
-        this.selectRandomArticle(); // 랜덤 기사 선택
-        console.log(this.articles);
-    
-      } catch (error) {
-        console.error("API 요청 오류:", error);
-            }
-      },
-     selectRandomArticle() {
-      if (this.articles.length > 0) {
-        const randomIndex = Math.floor(Math.random() * this.articles.length);
-        this.randomArticle = this.articles[randomIndex]; // 랜덤 기사 저장
-          }
-        },
-    
-      showMore() {
-        this.visibleCount += 5; // 더보기 클릭 시 5개씩 추가
-        },
-      },
-      components: {
+    components: {
         Swiper,
         SwiperSlide,
+      },
+    methods: {
+    async apiRequest(category) {
+      console.log(category);
+      try {
+        const res = await axios.get(`http://localhost:4000/news?keyword=${category}`);
+        // console.log(res.data); 응답 데이터 확인
+        if (res.data && res.data.data) {
+            this.articles = res.data.data.filter(article => article.image_url);
+            this.selectRandomArticle();
+        } else {
+            console.error("응답 데이터 구조가 예상과 다릅니다:", res.data);
+        }
+       } catch (error) {
+        console.error("API 요청 오류:", error);
       }
+    },
+    async apiRequest2(category) {
+      console.log(category)
+      try {
+        const res = await axios.get(`http://localhost:4000/news/section?m=articles&s=${category}`);
+        this.section = res.data.data;
+      } catch (error) {
+        console.error("API 요청 오류:", error);
+      }
+    },
+  //   async fetchArticles(category) {
+  //   console.log(category)
+  //   try {
+  //       const res = await axios.get(`http://localhost:4000/news?keyword=${category}`);
+  //       // console.log(res.data); 응답 데이터 확인
+  //       if (res.data && res.data.data) {
+  //           this.articles = res.data.data.filter(article => article.image_url);
+  //           this.selectRandomArticle();
+  //       } else {
+  //           console.error("응답 데이터 구조가 예상과 다릅니다:", res.data);
+  //       }
+  //      } catch (error) {
+  //       console.error("API 요청 오류:", error);
+  //     }
+  // },
+   selectRandomArticle() {
+    if (this.articles.length > 0) {
+      const randomIndex = Math.floor(Math.random() * this.articles.length);
+      this.randomArticle = this.articles[randomIndex];
+    }
+  },
+  showMore() {
+    this.listVisibleCount += 5; // listbox에 대한 더보기
+  },
+
+  showMoreSection() {
+    this.sectionVisibleCount += 4; // 섹션에 대한 더보기
+  },
+  changeCategory(category) {
+    
+    this.activeCategory = category;
+    this.visibleCount = 3;
+    this.apiRequest2(this.mapCategoryToApi(category)); // 선택한 카테고리로 API 요청
+  },
+  mapCategoryToApi(category) {
+    const categoryMap = {
+      '정치': 'politics',
+      '경제': 'economy',
+      '사회': 'society',
+      '문화': 'culture',
+      '세계': 'world',
+      '기술': 'tech',
+      '연예': 'entertainment',
+      '견해': 'opinion'
+    };
+    return categoryMap[category];
+     }
+   }
+     
 }
 </script>
 
 <style lang="scss">
 .contentswrap{
-  padding-bottom: 100px;
+  margin: 0 auto;
+  width: calc(100% - 40px);
+  padding-bottom: 50px;
   .mainimg{
-  margin-bottom: 50px;
+  margin-bottom: 30px;
   padding-bottom: 10px;
 
   figure{
@@ -149,20 +233,25 @@ export default {
     }
   }
 }
+
 .swiper{
   background-color: #F26930;
   border-radius: 10px;
-  height: 200px; /* 슬라이드 높이 조정 */
+  height: 140px; /* 슬라이드 높이 조정 */
+  padding: 10px 0;
 }
 .swiper-wrapper{
-  // flex-direction: column; 
   color: white;
   .swiper-slide{
     width: 100%;
+    display: flex;
+    align-items: center;
   .textlist-wrap{
       width: 100%;
       h3{
-        width: 100%;
+        margin: 0 auto;
+        text-align: center;
+        width: 75%;
         font-size: 16px;
         font-weight: 300;
       }
@@ -174,10 +263,72 @@ export default {
   color: white;
    z-index: 10;
 }
+.swiper-pagination-bullet-active{
+  background-color: white;
+}
+
+// 장르별 탭
+.genre-seciton{
+.menuwrap{
+    margin: 70px auto;
+    display: flex;
+    white-space: nowrap; /* 메뉴 항목이 줄 바꿈되지 않도록 설정 */
+    justify-content: space-between;
+    align-items: center;
+    overflow-x: auto;
+    ul{display: flex;
+      padding:0;
+      margin: 0;
+        li{ width: 15%;
+            list-style: none;
+            margin-right: 15px;
+            box-sizing: border-box;
+            a{  text-decoration: none;
+                color: #666;
+                display: inline-block;
+                font-size: 1rem;
+                padding: 10px 15px;
+                border: 2px solid #666;
+                border-radius: 99px;
+            }
+            a.actived{
+              border: none;
+              color: white;
+              font-weight: 600;
+              border: 2px solid #F26930;
+              background-color: #F26930;
+            }
+        }
+      } 
+  }
+.text-row{
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 30px;
+    margin: 20px 0 0 0;
+    &.last-row{
+      border:none; /* 마지막 항목의 border 제거 */
+      padding-bottom: 0; 
+    }
+    h3{
+      margin: 0 auto 10px;
+      text-align: center;
+      width:85%;
+    }
+   p{   margin: 0;
+        padding:0 10px;
+        display: -webkit-box;
+        overflow: hidden;
+        text-overflow: ellipsis; /* ...으로 표시 */
+        line-height: 1.5em; /* 줄 높이 설정 (필요에 따라 조정) */
+        max-height: 6em; /* 최대 높이 설정 */
+   }
+  }
+}
+//하단 컨텐츠
 .listbox{
   border-top: 2px solid #F26930;
   padding-top:50px;
-  margin: 50px 0;
+  margin: 50px 0 0;
   .list-wrap{
     margin-bottom: 30px;
     display: flex;
@@ -225,44 +376,13 @@ export default {
 }
 .more-button{
   cursor: pointer;
-  padding: 10px 20px;
+  padding: 10px 40px;
   border-radius: 99px;
   color: white;
   background-color: #F26930;
   border: none;}
 
-  .menuwrap{
-    margin: 70px auto;
-    display: flex;
-    white-space: nowrap; /* 메뉴 항목이 줄 바꿈되지 않도록 설정 */
-    justify-content: space-between;
-    align-items: center;
-    overflow-x: auto;
-    ul{display: flex;
-      padding:0;
-      margin: 0;
-        li{ width: 15%;
-            list-style: none;
-            margin-right: 15px;
-            box-sizing: border-box;
-            a{  text-decoration: none;
-                color: #666;
-                display: inline-block;
-                font-size: 1rem;
-                padding: 10px 15px;
-                border: 2px solid #666;
-                border-radius: 99px;
-            }
-            a.actived{
-              border: none;
-              color: white;
-              font-weight: 600;
-              border: 2px solid #F26930;
-              background-color: #F26930;
-            }
-        }
-      }
-    }
+
 
 </style>
 

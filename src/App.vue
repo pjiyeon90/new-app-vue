@@ -4,18 +4,20 @@
     <router-link to="/">국내</router-link> |
     <router-link to="/about">해외</router-link>
   </nav>
-  <router-view/>
+  <router-view  aaa="hello"/>
+  <FooterSection/>
 </template>
 
 
 
 <script>
 import HeaderMenu from "@/components/HeaderMenu";
+import FooterSection from "@/components/FooterSection";
 
 export default {
   name: 'App',
   components: {
-    HeaderMenu,
+    HeaderMenu, FooterSection
   }
 }
 
@@ -24,10 +26,9 @@ export default {
 
 <style lang="scss">
 body{
-  margin: 0 auto;
-  width: calc(100% - 40px);
-  // border: 1px solid #ebebeb;
   height: 100vh;
+  margin: 0;
+  padding:0;
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -38,6 +39,7 @@ body{
 }
 
 nav {
+  margin: 0 auto;
   border-top: 2px solid #F26930;
   padding: 20px 0;
   text-align: left;   //왼쪽 정렬
@@ -46,9 +48,11 @@ nav {
     font-weight: bold;
     color: #2c3e50;
     text-decoration: none;
-
     &.router-link-exact-active {
-      color: #F26930;
+      color: #F26930; 
+    }
+    &:first-child{
+      margin-left: 20px;
     }
   }
 }

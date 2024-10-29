@@ -123,7 +123,7 @@ export default {
     async apiRequest(category) {
       console.log(category);
       try {
-        const res = await axios.get(`http://localhost:4000/news?keyword=${category}`);
+        const res = await axios.get(`https://express-server-mocha-beta.vercel.app/news?keyword=${category}`);
         // console.log(res.data); 응답 데이터 확인
         if (res.data && res.data.data) {
             this.articles = res.data.data.filter(article => article.image_url);
@@ -138,7 +138,7 @@ export default {
     async apiRequest2(category) {
       console.log(category)
       try {
-        const res = await axios.get(`http://localhost:4000/news/section?m=articles&s=${category}`);
+        const res = await axios.get(`https://express-server-mocha-beta.vercel.app/news/section?m=articles&s=${category}`);
         this.section = res.data.data;
       } catch (error) {
         console.error("API 요청 오류:", error);

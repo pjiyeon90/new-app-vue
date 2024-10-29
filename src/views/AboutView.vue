@@ -4,8 +4,8 @@
       <div class="contentswrap">
         <!-- 컴포넌트 출력 -->
         <!-- 상단 큰 이미지 -->
-        <div class="mainimg" v-if="randomArticle">
-          <div class="img-summary">
+        <div class="mainimg-global" v-if="randomArticle">
+          <div class="img-summary-global">
           <h3>{{  randomArticle.title }}</h3> 
           <p class="summary">{{  randomArticle.summary }}</p>
           </div>
@@ -16,7 +16,7 @@
 
        <!-- 장르별 탭 부분 -->
        <div class="genre-seciton-global">
-          <div className='menuwrap' >
+          <div className='menuwrap-global' >
               <ul>
                   <li v-for="category in categories" :key="category">
                     <a :class="{ actived: activeCategory === category }" @click="changeCategory(category)">#{{ category }}</a>
@@ -190,10 +190,8 @@ export default {
   margin: 0 auto;
   width: calc(100% - 40px);
   padding-bottom: 50px;
-  .mainimg{
-  margin-bottom: 30px;
-  padding-bottom: 10px;
-
+  .mainimg-global{
+    margin-top: 10px;
   figure{
     margin: 0;
     padding: 0;
@@ -207,7 +205,8 @@ export default {
       filter: drop-shadow(0 0 5px rgba(0,0,0,.2));
     }
   }
-  .img-summary{
+  .img-summary-global{
+    margin-bottom: 20px;
     h3{margin: 0;
       text-align: left;}
     p{
@@ -259,9 +258,9 @@ export default {
 
 // 장르별 탭
 .genre-seciton-global{
-  margin-bottom: 30px;
-.menuwrap{
-    margin: 70px auto;
+  margin-bottom: 40px;
+.menuwrap-global{
+    margin: 50px auto;
     display: flex;
     white-space: nowrap; /* 메뉴 항목이 줄 바꿈되지 않도록 설정 */
     justify-content: space-between;

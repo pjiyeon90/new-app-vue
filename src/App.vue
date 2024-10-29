@@ -26,8 +26,10 @@ export default {
 
 <style lang="scss">
 body{
+  min-width: 360px;
+  max-width: 768px;
   height: 100vh;
-  margin: 0;
+  margin: 0 auto;
   padding:0;
 }
 #app {

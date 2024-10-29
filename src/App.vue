@@ -4,7 +4,7 @@
     <router-link to="/">국내</router-link> |
     <router-link to="/about">해외</router-link>
   </nav>
-  <router-view  @isNav="isNavChange"/>
+  <router-view  @isNavChange="isNavChange"/>
   <FooterSection/>
 </template>
 

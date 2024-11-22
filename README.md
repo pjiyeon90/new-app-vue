@@ -22,5 +22,5 @@
 
 
 ### :computer: 스크린
-![news01](https://github.com/user-attachments/assets/3badc406-84eb-4cb9-97a7-4d7d7976fb0c)
+![news01](https://github.com/user-attachments/assets/3badc406-84eb-4cb9-97a7-4d7d7976fb0c)  
 ![new02](https://github.com/user-attachments/assets/121aefcb-9805-4659-851a-32630ec5ab36)

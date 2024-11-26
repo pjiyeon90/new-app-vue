@@ -173,7 +173,7 @@ export default {
     
     this.activeCategory = category;
     this.visibleCount = 3;
-    this.apiRequest2(this.mapCategoryToApi(category)); // 선택한 카테고리로 API 요청
+    this.apiRequest4(this.mapCategoryToApi(category)); // 선택한 카테고리로 API 요청
   },
   mapCategoryToApi(category) {
     const categoryMap = {
